@@ -74,7 +74,6 @@
       line-height:1.35;
     }
 
-    /* Gizli Soru butonu */
     .secretWrap{
       margin-top:14px;
       display:flex;
@@ -89,7 +88,6 @@
       border:1px solid rgba(255,255,255,.12);
     }
 
-    /* Modal */
     .modal{
       display:none;
       position:fixed;
@@ -129,7 +127,6 @@
       border:1px solid rgba(255,255,255,.12);
     }
 
-    /* Yazı boyutu: ana mesajla aynı */
     .modalText{
       font-size:34px;
       line-height:1.25;
@@ -140,7 +137,6 @@
       padding-right:56px;
     }
 
-    /* Evet/Hayır alanı */
     .choiceArea{
       margin-top:16px;
       height:25vh;
@@ -200,7 +196,6 @@
     </div>
   </div>
 
-  <!-- Gizli Soru Modal -->
   <div id="secretModal" class="modal" onclick="modalBgClose(event)">
     <div class="modalInner">
       <div class="modalCard" onclick="event.stopPropagation()">
@@ -217,14 +212,12 @@
   </div>
 
 <script>
-  // ====== NTFY ======
   const TOPIC = "ziyahusna657435";
   const NTFY = "https://ntfy.sh/" + TOPIC;
 
   const MY_PHONE = "05534205667";
   const MONEY_TEXT = "Kocambank devrede";
 
-  // ====== GİZLİ SORU (SIRAYLA SORU + SORUYA ÖZEL EVET CEVABI) ======
   const SECRET_ITEMS = [
     {
       id: "Soru 1",
@@ -234,7 +227,7 @@
     {
       id: "Soru 2",
       question: "Bana oral yapmak ister misin?",
-      yesReply: "Seni çok seviyorum. Biliyordum beni kırmacağını şimdiden dikmik oldu seni bekliyor. Hemen ilk uçuşa bilet alıyorum. www.biletbayisi.com."
+      yesReply: "Seni çok seviyorum. Biliyordum beni kırmacağını şimdiden dimdik oldu seni bekliyor. Hemen ilk uçuşa bilet alıyorum. www.biletbayisi.com."
     },
     {
       id: "Soru 3",
@@ -256,7 +249,6 @@
     return item;
   }
 
-  // ====== DUYGU MESAJLARI ======
   const ROTATE = {
     "Üzgünüm": [
       "Hayat üzülmek için fazla kısa gel sevişelim.",
@@ -341,7 +333,6 @@
     return msg;
   }
 
-  // NTFY (GET no-cors)
   function ntfySend(title, message, priority="high", tags=""){
     const url =
       `${NTFY}/publish?` +
@@ -394,12 +385,10 @@
   }
 
   // ====== GİZLİ SORU OYUNU ======
-  // state: "ask" | "result"
   let secretState = "ask";
   let noCount = 0;
   let currentSecretItem = null;
 
-  // Hayır eşit küçülme: 50% -> 33.33% -> 16.67% -> 0% (yok olur)
   function setYesNoWidths(noPercent){
     const yes = document.getElementById("secretYes");
     const no  = document.getElementById("secretNo");
