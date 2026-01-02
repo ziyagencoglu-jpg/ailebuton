@@ -44,6 +44,12 @@
     button:active{transform:scale(0.98);}
     .full{grid-column:1 / -1;}
 
+    /* Merak butonu ayrı dursun, dikkat çeksin */
+    .curiosityBtn{
+      background: linear-gradient(180deg, #3a214b, #1f1f26);
+      border:1px solid rgba(255,255,255,.14);
+    }
+
     .card{
       margin-top:16px;
       background: linear-gradient(180deg, #191922, var(--card));
@@ -77,6 +83,78 @@
     .adminRow{display:none; gap:10px; margin-top:12px;}
     .adminRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
     .adminBadge{display:none; margin-top:10px; font-size:12px; opacity:.55;}
+
+    /* Modal (Merak oyunu) */
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.72);
+      backdrop-filter: blur(8px);
+      z-index:9999;
+      padding:18px;
+    }
+    .modalInner{
+      max-width:720px;
+      margin:0 auto;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .modalCard{
+      width:100%;
+      background: linear-gradient(180deg, #1a1a25, #12121a);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:26px;
+      padding:18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    }
+    .modalTitle{
+      font-size:24px;
+      font-weight:950;
+      margin:0 0 10px;
+      line-height:1.2;
+    }
+    .modalText{
+      font-size:18px;
+      opacity:.9;
+      margin:0 0 16px;
+      line-height:1.35;
+      white-space:pre-line;
+    }
+    .modalBtns{
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+    }
+    .modalBtns button{
+      padding:16px 14px;
+      font-size:18px;
+      border-radius:20px;
+      flex:1;
+    }
+    .yesBtn{
+      background: linear-gradient(180deg, #2b5d3a, #1f1f26);
+      border:1px solid rgba(255,255,255,.18);
+    }
+    .noBtn{
+      background: linear-gradient(180deg, #5d2b2b, #1f1f26);
+      border:1px solid rgba(255,255,255,.18);
+      transform-origin:center;
+    }
+    .fullYesMode{
+      height:62vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px !important;
+    }
+    .tinyNote{
+      margin-top:10px;
+      font-size:13px;
+      opacity:.65;
+    }
   </style>
 </head>
 <body>
@@ -94,6 +172,8 @@
 
       <button class="full" onclick="money()">💸 Param Bitti</button>
       <button class="full" onclick="danger()">🚨 Tehlikedeyim</button>
+
+      <button class="full curiosityBtn" onclick="openCuriosity()">😼 Merak Butonu</button>
     </div>
 
     <div class="card">
@@ -114,9 +194,25 @@
     </div>
   </div>
 
+  <!-- Merak Modal -->
+  <div id="curiosityModal" class="modal" onclick="modalBgClose(event)">
+    <div class="modalInner">
+      <div class="modalCard">
+        <div id="curiosityTitle" class="modalTitle">Bir şey soracağım…</div>
+        <div id="curiosityText" class="modalText">Duşa girip beni görüntülü arayacak mısın?</div>
+
+        <div id="curiosityBtns" class="modalBtns">
+          <button id="yesBtn" class="yesBtn" onclick="curiosityYes()">Evet</button>
+          <button id="noBtn" class="noBtn" onclick="curiosityNo()">Hayır</button>
+        </div>
+
+        <div id="curiosityNote" class="tinyNote">Not: Bu buton tamamen şaka ve tatlı bir oyun 😊</div>
+      </div>
+    </div>
+  </div>
+
 <script>
   // ====== ADMIN (Sadece sen göreceksin) ======
-  // Sen admin için linke şunu ekle: ?admin=ziya
   const ADMIN_CODE = "ziya";
   const qs = new URLSearchParams(location.search);
   const isAdmin = qs.get("admin") === ADMIN_CODE;
@@ -143,146 +239,4 @@
       "Kavga etmişiz yine. Tamam biraz öküzlük ettim galiba özür dilerim.",
       "Unutma kimin haklı olduğu önemli değil. Ne hissettiğimiz önemli.",
       "Eğer bu üzgünlüğünün sebebi ben değilsem hemen ararmısın yoketmem gereken insanlar var galiba",
-      "Gözyaşı dökerek çirkinleşmeye çalışsanızda bir boka yaramadığını öğrenmek için aynaya bakmaya ne dersiniz prenses?",
-      "Ne çektik biz birbirimizden be fıstığım. Bu botuna bu kadar çok basmak zorunda kalman beni çok yaraladı.",
-      "Kanka diğer butonlarıda mı denesen müptelası oldun bunun, tamam şimdi telefonu masaya bırak güzel bir kahve yap ve pencereyi açıp temiz havayı içine çekerek anama söv iyi gelir",
-      "Benimde çok üzgün olduğumu sakın unutma, üzüldüğüm için seni üzüyor, sonra seni üzdüğüm için bir daha üzülüyorum.",
-      "Üzülmek için fazla güzelsin, bir insan bu kadar parıltılı olup nasıl üzülebilir ki",
-      "Bu üzgünüm butonunun son mesajıydı umarım bunu yanında uyuyor olduğum zamana kadar tüketmemiş olursun karıcım."
-    ],
-    "Mutluyum": [
-      "Mutlu olmak sana çok yakışıyor bal porsuğum yüzün hep gülsün",
-      "Herhalde mutlu olacaksın benim gibi bir kocan var.",
-      "Mutluluğunun kaynağı ben değilsem onu bile kıskanabilirim prenses",
-      "Bu kadar seri bu butonu kullanıyor olman sevindirici, sen mutluysan bende mutluyum fıstığım.",
-      "Bu hayattaki tek gayem seni mutlu etmek, başarılı olduğuma çok sevindim.",
-      "Ne oldu fıstık bu gülücükler ne? Ara bakalım beni bende mutlu olayım.",
-      "Hakettiğin gibi, bunun şans olduğunu asla düşünme bunun için çok çaba sarf ettin",
-      "Bu buton beni mutlu etme butonu aslında. Sen bu butona bastıkça bende dünyanın en mutlu adamı oluyorum.",
-      "Ağzını yerim senin gülüşüne ömrümü veririm, hep mutlu ol aşkım.",
-      "Bu botunun son mesajı umarım çok kısa sürede bitmiştir bitanem. Ben seve seve yenilerini yazarım seni çok seviyorum."
-    ],
-    "Yanıyorum": [
-      "Tabularını yık artık güzelim ben senin kocanım üstündeki tüm kıyafet yüklerinden arınıp beni görüntülü aramaya ne dersin www.biletbayisi.com",
-      "Bende feci yükseldim. Butona ne zaman bastığımı nerden biliyorsun diye sorma ben hep yükseğim zaten. www.biletbayisi.com",
-      "Yanımda olsan da vücudunun her cm sini emsem be güzelim. www.biletbayisi.com",
-      "Ufff gelsene ıslanmış bacak aranla çözmemiz gereken şeyler var. www.biletbayisi.com",
-      "Çavuş seni selamlıyor sahip emret 7/24 mesai yapsın yoruldum diyenin canı çıksın. www.biletbayisi.com",
-      "Meme uçlarına benim yerime dokunurmusun. Onları emmeyi çok özledim. www.biletbayisi.com",
-      "Sevişmenin en ateşli anında birden dillerimizin kontrolünü kaybedip ağızlarımızın içinde gezdirmeye başlıyoruz ya heh tam o andayım şuan. www.biletbayisi.com",
-      "Taş gibisin be. Şuanda çıplak ve sıcak vücuduna sarılmak için bir böbreğimi verirdim. www.biletbayisi.com",
-      "Tam şuanda yanında olup boynunu emerken kalçanı sıkıyor olmalıydım amk hayatı. www.biletbayisi.com",
-      "Bu butonun son mesajı, bu kadar hızlı tüketmen umut verici seninle her gece 3 posta seviştiğimiz. Uykusuzluktan günlük işlerimizi aksattığımız evreye geçmeliyiz artık. www.biletbayisi.com"
-    ],
-    "Özledim": [
-      "Çık gel be güzellik, ben gelsem araba kirala falan ohhooo çok masraf :D",
-      "Bende çok özledim. Her gece sana sarılarak uyumak istiyorum artık.",
-      "Oy kıyamam sana az kaldı be güzelim kavuşuyoruz",
-      "Ne çektik be 6 senede. Bizden daha fazla kavuşmayı hakeden çift yoktur dünyada.",
-      "Böyle güzel bir kadının kendisini özlemesinden daha büyük ne başarabilir ki bir erkek bu hayatta?",
-      "Ömrümüz birbirimizi özlemekle geçti. Yaşlandık resmen bal porsuğum",
-      "Seni çoooooooooook seviyorum.",
-      "19 Temmuz sonsuz kavuşma anımız sen hangi tarihtesin. Ne kadar kaldı?",
-      "Özleyenler özediklerine özlediğini söylemeli bence. Arasana fıstığım özlem giderelim.",
-      "Buda özlem butonunun son mesajı umarım kavuşmamıza çok kısa bir zaman kalmıştır. Hayatımın anlamı olan kadın"
-    ],
-    "Kızgınım": [
-      "Biliyorum. Hayat bize çakıl taşlarıyla dolu bir yol çizdi. Ama yolun sonunda yumuşak kumla kaplı bir sahil var.",
-      "Mükemmel ilişki kavgasız olmak değil, kavgalar sonrası kopmayacak olmak.",
-      "Emin ol seni üzmek kırmak yada kızdırmak istemem. Ben çok daha fazlasını yaşıyor ve filtreleyerek daha azını sana yansıtıyorumdur.",
-      "Hem suçlu hem güçlü, bide kızgınmış bak sen şuna ya",
-      "Öfken dinince beni ararmısın. Çözelim şu meseleyi.",
-      "Lütfen kızgınsın diye bu görüşmeme süresini uzatma. Ne kadar uzarsa o kadar kırılırız",
-      "Yine ne bok yedim acaba bu botuna çok fazla basmaya başladın :D",
-      "Haklıda olsam, haksızda olsam sen şuan özür bekliyorsun dimi. Peki tamam özür dilerim hayatım.",
-      "Abartma ya sende bu kadar kızacak ne var. Bayıl birde feriha",
-      "Yine son mesaja geldik kanka. İnşallah yükseldim ve mutluyumdan çok çok sonra tüketmişsindir bu butonu. He bu arada kızgınken ne kadar tatlı olduğunu söylemişmiydim?"
-    ]
-  };
-
-  function cleanText(s){
-    return String(s)
-      .replace(/^['"“”‘’]+/g, "")
-      .replace(/['"“”‘’]+$/g, "")
-      .trim();
-  }
-
-  function setStatus(bigText, smallText=""){
-    document.getElementById("status").textContent = bigText;
-    document.getElementById("sub").textContent = smallText;
-  }
-
-  function nextMessage(key){
-    const list = ROTATE[key] || ["(mesaj yok)"];
-    const k = "idx_" + key;
-    const idx = parseInt(localStorage.getItem(k) || "0", 10);
-    const msg = list[idx % list.length];
-    localStorage.setItem(k, String((idx + 1) % list.length));
-    return msg;
-  }
-
-  function ntfySend(title, message, priority="high", tags=""){
-    const url =
-      `${NTFY}/publish?` +
-      `title=${encodeURIComponent(title)}` +
-      `&message=${encodeURIComponent(message)}` +
-      `&priority=${encodeURIComponent(priority)}` +
-      (tags ? `&tags=${encodeURIComponent(tags)}` : "") +
-      `&t=${Date.now()}`;
-
-    try { fetch(url, { method:"GET", mode:"no-cors", cache:"no-store", keepalive:true }); } catch(e){}
-    const img = new Image();
-    img.referrerPolicy = "no-referrer";
-    img.src = url;
-  }
-
-  function rel(type){
-    const raw = nextMessage(type);
-    const msg = cleanText(raw);
-    setStatus(msg, `${type} → gönderildi ✅`);
-    ntfySend(type, msg, "high", "speech_balloon");
-  }
-
-  function money(){
-    setStatus(MONEY_TEXT, "Param Bitti → gönderildi ✅");
-    ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
-  }
-
-  function getLocation(){
-    return new Promise((resolve, reject) => {
-      if(!navigator.geolocation) return reject("Konum desteklenmiyor");
-      navigator.geolocation.getCurrentPosition(
-        (pos)=>resolve(pos.coords),
-        (err)=>reject(err.message),
-        { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
-      );
-    });
-  }
-
-  async function danger(){
-    setStatus("Konum alınıyor…", "İzin verirsen konum gönderilecek");
-    let maps = "Konum alınamadı (izin verilmedi olabilir)";
-    try{
-      const c = await getLocation();
-      maps = `https://maps.google.com/?q=${c.latitude},${c.longitude}`;
-    }catch(e){}
-
-    const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
-    setStatus(body, "Tehlikedeyim → gönderildi ✅");
-    ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
-    window.location.href = `tel:${MY_PHONE}`;
-  }
-
-  // Admin fonksiyonları (sadece admin linkiyle görünür)
-  function testPush(){
-    setStatus("Test bildirimi gönderildi ✅", `Topic: ${TOPIC}`);
-    ntfySend("TEST", "Test bildirimi (site üzerinden) ✅", "high", "test_tube");
-  }
-
-  function resetAll(){
-    ["Üzgünüm","Mutluyum","Yanıyorum","Özledim","Kızgınım"].forEach(k => localStorage.removeItem("idx_" + k));
-    setStatus("Sıfırlandı ✅", "Mesaj sıraları başa alındı");
-  }
-</script>
-</body>
-</html>
+      "Gözyaşı dökerek çirk
