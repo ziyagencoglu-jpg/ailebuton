@@ -39,16 +39,11 @@
       color:#fff;
       box-shadow: 0 14px 30px var(--soft);
       transition: transform .06s ease, filter .2s ease;
+      cursor:pointer;
     }
     button:hover{filter:brightness(1.05);}
     button:active{transform:scale(0.98);}
     .full{grid-column:1 / -1;}
-
-    /* Merak butonu ayrı dursun, dikkat çeksin */
-    .curiosityBtn{
-      background: linear-gradient(180deg, #3a214b, #1f1f26);
-      border:1px solid rgba(255,255,255,.14);
-    }
 
     .card{
       margin-top:16px;
@@ -66,7 +61,7 @@
       white-space:pre-line;
       letter-spacing:.1px;
     }
-    .sub{
+    #sub{
       margin-top:12px;
       font-size:14px;
       opacity:.65;
@@ -79,12 +74,27 @@
       line-height:1.35;
     }
 
-    /* Admin butonları varsayılan gizli */
+    /* Merak butonu: kartın altı, ortalı, büyük */
+    .curiosityWrap{
+      margin-top:14px;
+      display:flex;
+      justify-content:center;
+    }
+    .curiosityBtn{
+      width:min(520px, 100%);
+      padding:22px 16px;
+      font-size:20px;
+      border-radius:24px;
+      background: linear-gradient(180deg, #3a214b, #1f1f26);
+      border:1px solid rgba(255,255,255,.16);
+    }
+
+    /* Admin (gizli) */
     .adminRow{display:none; gap:10px; margin-top:12px;}
     .adminRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
     .adminBadge{display:none; margin-top:10px; font-size:12px; opacity:.55;}
 
-    /* Modal (Merak oyunu) */
+    /* Modal */
     .modal{
       display:none;
       position:fixed;
@@ -109,16 +119,30 @@
       border-radius:26px;
       padding:18px;
       box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      position:relative;
+    }
+    .modalClose{
+      position:absolute;
+      top:12px;
+      right:12px;
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      padding:0;
+      font-size:18px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
     }
     .modalTitle{
       font-size:24px;
       font-weight:950;
       margin:0 0 10px;
       line-height:1.2;
+      padding-right:54px;
     }
     .modalText{
       font-size:18px;
-      opacity:.9;
+      opacity:.92;
       margin:0 0 16px;
       line-height:1.35;
       white-space:pre-line;
@@ -172,21 +196,23 @@
 
       <button class="full" onclick="money()">💸 Param Bitti</button>
       <button class="full" onclick="danger()">🚨 Tehlikedeyim</button>
-
-      <button class="full curiosityBtn" onclick="openCuriosity()">😼 Merak Butonu</button>
     </div>
 
     <div class="card">
       <div class="label">Son gönderilen mesaj</div>
       <div id="status">Bir butona bas 👇</div>
-      <div id="sub" class="sub"></div>
+      <div id="sub"></div>
 
       <div class="warn">
         Lütfen meraktan tüm butonlara basma 🙂 Sadece gerçekten ihtiyacın olduğunda kullan; mesajlar sırayla ilerliyor.
       </div>
 
-      <div id="adminBadge" class="adminBadge">Yönetici modu açık ✅</div>
+      <!-- Merak butonu artık burada -->
+      <div class="curiosityWrap">
+        <button class="curiosityBtn" onclick="openCuriosity()">😼 Sakın Basma</button>
+      </div>
 
+      <div id="adminBadge" class="adminBadge">Yönetici modu açık ✅</div>
       <div id="adminRow" class="adminRow">
         <button onclick="testPush()">🧪 Test Bildirimi</button>
         <button onclick="resetAll()">🔄 Sıfırla</button>
@@ -197,46 +223,5 @@
   <!-- Merak Modal -->
   <div id="curiosityModal" class="modal" onclick="modalBgClose(event)">
     <div class="modalInner">
-      <div class="modalCard">
-        <div id="curiosityTitle" class="modalTitle">Bir şey soracağım…</div>
-        <div id="curiosityText" class="modalText">Duşa girip beni görüntülü arayacak mısın?</div>
-
-        <div id="curiosityBtns" class="modalBtns">
-          <button id="yesBtn" class="yesBtn" onclick="curiosityYes()">Evet</button>
-          <button id="noBtn" class="noBtn" onclick="curiosityNo()">Hayır</button>
-        </div>
-
-        <div id="curiosityNote" class="tinyNote">Not: Bu buton tamamen şaka ve tatlı bir oyun 😊</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-  // ====== ADMIN (Sadece sen göreceksin) ======
-  const ADMIN_CODE = "ziya";
-  const qs = new URLSearchParams(location.search);
-  const isAdmin = qs.get("admin") === ADMIN_CODE;
-
-  if (isAdmin) {
-    document.getElementById("adminRow").style.display = "flex";
-    document.getElementById("adminBadge").style.display = "block";
-  }
-
-  // ====== NTFY ======
-  const TOPIC = "ziyahusna657435";
-  const NTFY = "https://ntfy.sh/" + TOPIC;
-
-  // Tehlikedeyim arama
-  const MY_PHONE = "05534205667";
-
-  // Param bitti sabit mesaj
-  const MONEY_TEXT = "Kocambank devrede";
-
-  // ====== MESAJLAR ======
-  const ROTATE = {
-    "Üzgünüm": [
-      "Hayat üzülmek için fazla kısa gel sevişelim.",
-      "Kavga etmişiz yine. Tamam biraz öküzlük ettim galiba özür dilerim.",
-      "Unutma kimin haklı olduğu önemli değil. Ne hissettiğimiz önemli.",
-      "Eğer bu üzgünlüğünün sebebi ben değilsem hemen ararmısın yoketmem gereken insanlar var galiba",
-      "Gözyaşı dökerek çirk
+      <div class="modalCard" onclick="event.stopPropagation()">
+        <button class="modalClose" onclick="closeCuriosity()">✕</button>
