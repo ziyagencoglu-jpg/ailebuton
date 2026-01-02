@@ -3,22 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aile Butonları</title>
+  <title>Dünyalar Güzeli Hüsna'nın Ruh Hali</title>
   <style>
     body{font-family:system-ui,Arial; margin:0; background:#0f0f10; color:#fff;}
-    .wrap{max-width:560px; margin:0 auto; padding:18px;}
-    h1{font-size:20px; margin:8px 0 14px;}
+    .wrap{max-width:620px; margin:0 auto; padding:18px;}
+    h1{font-size:22px; margin:10px 0 16px; letter-spacing:.2px;}
     .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-    button{border:0; border-radius:16px; padding:18px 12px; font-size:16px; font-weight:800; background:#1f1f22; color:#fff;}
+    button{
+      border:0; border-radius:18px; padding:18px 12px;
+      font-size:16px; font-weight:850; background:#1f1f22; color:#fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
     button:active{transform:scale(0.98);}
     .full{grid-column:1 / -1;}
-    .ok{margin-top:12px; font-size:13px; opacity:.95; white-space:pre-line;}
-    .hint{margin-top:10px; font-size:12px; opacity:.7; line-height:1.4}
+    .card{
+      margin-top:14px; background:#17171a; border:1px solid rgba(255,255,255,.08);
+      border-radius:18px; padding:14px 14px;
+      box-shadow: 0 14px 26px rgba(0,0,0,.28);
+    }
+    .label{font-size:12px; opacity:.7; margin-bottom:8px;}
+    #status{
+      font-size:18px; line-height:1.35; font-weight:700;
+      white-space:pre-line;
+    }
+    .sub{margin-top:10px; font-size:12px; opacity:.65;}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Butonlar</h1>
+    <h1>Dünyalar Güzeli Hüsna'nın Ruh Hali</h1>
 
     <div class="grid">
       <button onclick="rel('Üzgünüm')">😔 Üzgünüm</button>
@@ -30,28 +43,28 @@
       <button class="full" onclick="rel('Kızgınım')">😡 Kızgınım</button>
 
       <button class="full" onclick="money()">💸 Param Bitti</button>
-      <button class="full" onclick="danger()">🚨 Tehlikedeyim (Konum + Ara)</button>
+      <button class="full" onclick="danger()">🚨 Tehlikedeyim</button>
     </div>
 
-    <div id="status" class="ok"></div>
-    <div class="hint">
-      Duygu butonları: her basışta 10 mesaj sırayla döner ve sana bildirim gider.
-      Tehlikedeyim: konum izni ister, Google Maps linkini acil bildirimle yollar ve arama ekranı açar.
+    <div class="card">
+      <div class="label">Son gönderilen mesaj</div>
+      <div id="status">Bir butona bas 👇</div>
+      <div id="sub" class="sub"></div>
     </div>
   </div>
 
 <script>
-  // Senin ntfy topic’in:
-  const TOPIC_URL = "https://ntfy.sh/ziyahusna657435";
+  // ntfy topic
+  const TOPIC = "ziyahusna657435";
+  const NTFY_BASE = "https://ntfy.sh/" + TOPIC;
 
-  // Param Bitti sabit mesaj
-  const MONEY_TEXT = "Kocambank devrede";
-
-  // Tehlikedeyim basılınca arama ekranı açılsın + numara
-  const CALL_ON_DANGER = true;
+  // Tehlikedeyim arama
   const MY_PHONE = "05534205667";
 
-  // 5 duygu butonu için 10’ar mesaj
+  // Param bitti sabit mesaj
+  const MONEY_TEXT = "Kocambank devrede";
+
+  // Mesaj havuzları
   const ROTATE = {
     "Üzgünüm": [
       "Hayat üzülmek için fazla kısa gel sevişelim.",
@@ -115,9 +128,12 @@
     ]
   };
 
-  function status(t){ document.getElementById("status").textContent = t; }
+  function setStatus(bigText, smallText=""){
+    document.getElementById("status").textContent = bigText;
+    document.getElementById("sub").textContent = smallText;
+  }
 
-  // Mesajlar sırayla döner: 1→2→...→10→1 (eşinin iPhone'unda hatırlar)
+  // sırayla döndürme (cihazda saklar)
   function nextMessage(key){
     const list = ROTATE[key] || ["(mesaj yok)"];
     const k = "idx_" + key;
@@ -127,38 +143,30 @@
     return msg;
   }
 
-  async function pushSend(title, body, priority="high", tags=""){
-    const res = await fetch(TOPIC_URL, {
-      method: "POST",
-      body: body,
-      headers: {
-        "Title": title,
-        "Priority": priority,   // default / high / urgent
-        "Tags": tags
-      }
-    });
-    if(!res.ok) throw new Error("push failed");
+  // ntfy: GET /publish?message=...&priority=...&tags=...&title=...
+  // (tarayıcıda daha stabil) :contentReference[oaicite:2]{index=2}
+  function ntfySend(title, message, priority="high", tags=""){
+    const url =
+      `${NTFY_BASE}/publish?` +
+      `title=${encodeURIComponent(title)}` +
+      `&message=${encodeURIComponent(message)}` +
+      `&priority=${encodeURIComponent(priority)}` +
+      (tags ? `&tags=${encodeURIComponent(tags)}` : "");
+
+    // CORS'a takılmamak için image beacon
+    const img = new Image();
+    img.src = url;
   }
 
-  async function rel(type){
+  function rel(type){
     const msg = nextMessage(type);
-    status(`Seçilen mesaj:\n"${msg}"\n\nGönderiliyor…`);
-    try{
-      await pushSend(type, msg, "high", "speech_balloon");
-      status(`Gönderildi ✅\n\n"${msg}"`);
-    }catch(e){
-      status("Gönderilemedi ❌\nTopic doğru mu? İnternet var mı?");
-    }
+    setStatus(`“${msg}”`, `${type} gönderildi ✅`);
+    ntfySend(type, msg, "high", "speech_balloon");
   }
 
-  async function money(){
-    status("Bildiriliyor…");
-    try{
-      await pushSend("Param Bitti", MONEY_TEXT, "high", "moneybag");
-      status("Gönderildi ✅");
-    }catch(e){
-      status("Gönderilemedi ❌");
-    }
+  function money(){
+    setStatus(`“${MONEY_TEXT}”`, "Param Bitti gönderildi ✅");
+    ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
   }
 
   function getLocation(){
@@ -173,24 +181,20 @@
   }
 
   async function danger(){
-    status("Konum alınıyor… (İzin ver)");
+    setStatus("Konum alınıyor…", "İzin verirsen konum gönderilecek");
     let maps = "Konum alınamadı (izin verilmedi olabilir)";
     try{
       const c = await getLocation();
       maps = `https://maps.google.com/?q=${c.latitude},${c.longitude}`;
     }catch(e){}
 
-    try{
-      await pushSend("Tehlikedeyim", `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`, "urgent", "rotating_light,warning");
-      status("Konum gönderildi ✅");
-    }catch(e){
-      status("Push gönderilemedi ❌");
-    }
+    const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
+    setStatus(body, "Tehlikedeyim gönderildi ✅");
 
-    if (CALL_ON_DANGER) {
-      // iPhone arama ekranı açar (eşin onaylayıp arar)
-      window.location.href = `tel:${MY_PHONE}`;
-    }
+    ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
+
+    // Arama ekranı
+    window.location.href = `tel:${MY_PHONE}`;
   }
 </script>
 </body>
