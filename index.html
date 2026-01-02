@@ -1,6 +1,4 @@
 <!doctype html>
-
-<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
@@ -208,7 +206,7 @@
       <div class="modalCard" onclick="event.stopPropagation()">
         <button class="modalClose" onclick="closeSecret()">✕</button>
 
-        <p id="secretText" class="modalText">Duşa girip beni görüntülü arayacak mısın?</p>
+        <p id="secretText" class="modalText"></p>
 
         <div class="choiceArea">
           <button id="secretYes" class="yesBtn" onclick="secretYes()">Evet</button>
@@ -226,7 +224,39 @@
   const MY_PHONE = "05534205667";
   const MONEY_TEXT = "Kocambank devrede";
 
-  // ====== MESAJLAR ======
+  // ====== GİZLİ SORU (SIRAYLA SORU + SORUYA ÖZEL EVET CEVABI) ======
+  const SECRET_ITEMS = [
+    {
+      id: "Soru 1",
+      question: "Duşa girip beni görüntülü aramak ister misin?",
+      yesReply: "Biliyordum beni kıramayacağını.\nSeni seviyorum ve sabırsızlıkla görüntülü aramanı bekliyorum."
+    },
+    {
+      id: "Soru 2",
+      question: "Bana oral yapmak ister misin?",
+      yesReply: "Seni çok seviyorum. Biliyordum beni kırmacağını şimdiden dikmik oldu seni bekliyor. Hemen ilk uçuşa bilet alıyorum. www.biletbayisi.com."
+    },
+    {
+      id: "Soru 3",
+      question: "Vücudunun en güzel yerlerinin bana fotoğrafını atmak ister misin?",
+      yesReply: "Oyyş mükemmel vücudunu görmek için ben ve çavuş sabırsızlıkla bekliyoruz dünyalar güzelim."
+    },
+    {
+      id: "Soru 4",
+      question: "Sana oral yapmamı ister misin?",
+      yesReply: "Emrinize amadeyim prensesim. Seni emerek uzaya çıkarmak için sabırsızlanıyorum. Hemen ilk uçakla ordayım. www.biletbayisi.com."
+    }
+  ];
+
+  function nextSecretItem(){
+    const k = "idx_secret";
+    const idx = parseInt(localStorage.getItem(k) || "0", 10);
+    const item = SECRET_ITEMS[idx % SECRET_ITEMS.length];
+    localStorage.setItem(k, String((idx + 1) % SECRET_ITEMS.length));
+    return item;
+  }
+
+  // ====== DUYGU MESAJLARI ======
   const ROTATE = {
     "Üzgünüm": [
       "Hayat üzülmek için fazla kısa gel sevişelim.",
@@ -363,11 +393,13 @@
     window.location.href = `tel:${MY_PHONE}`;
   }
 
-  // ====== GİZLİ SORU (STATE İLE RESET) ======
-  // state: "ask" (soru modu) | "result" (sonuç gösterildi, evet=kapar)
+  // ====== GİZLİ SORU OYUNU ======
+  // state: "ask" | "result"
   let secretState = "ask";
   let noCount = 0;
+  let currentSecretItem = null;
 
+  // Hayır eşit küçülme: 50% -> 33.33% -> 16.67% -> 0% (yok olur)
   function setYesNoWidths(noPercent){
     const yes = document.getElementById("secretYes");
     const no  = document.getElementById("secretNo");
@@ -377,15 +409,16 @@
   }
 
   function openSecret(){
-    // her açışta reset
     secretState = "ask";
     noCount = 0;
+
+    currentSecretItem = nextSecretItem();
 
     const txt = document.getElementById("secretText");
     const yes = document.getElementById("secretYes");
     const no  = document.getElementById("secretNo");
 
-    txt.textContent = "Duşa girip beni görüntülü arayacak mısın?";
+    txt.textContent = currentSecretItem.question;
 
     yes.textContent = "Evet";
     no.textContent  = "Hayır";
@@ -394,6 +427,8 @@
     setYesNoWidths(50);
 
     document.getElementById("secretModal").style.display = "block";
+
+    ntfySend("Gizli Soru", `${currentSecretItem.id}\nSoru: ${currentSecretItem.question}`, "high", "see_no_evil");
   }
 
   function closeSecret(){
@@ -408,6 +443,7 @@
     if (secretState !== "ask") return;
 
     noCount++;
+
     const txt = document.getElementById("secretText");
     const yes = document.getElementById("secretYes");
     const no  = document.getElementById("secretNo");
@@ -415,16 +451,16 @@
     if (noCount === 1){
       txt.textContent = "Hadi ama bir daha düşün.";
       setYesNoWidths(33.3333);
-      ntfySend("Gizli Soru", "Hayır dedi (1/3) 🙈", "high", "see_no_evil");
+      ntfySend("Gizli Soru", `${currentSecretItem.id}\nSoru: ${currentSecretItem.question}\nHayır dedi (1/3) 🙈`, "high", "see_no_evil");
     } else if (noCount === 2){
       txt.textContent = "Olmaz bu cevabı kabul etmiyorum.";
       setYesNoWidths(16.6667);
-      ntfySend("Gizli Soru", "Hayır dedi (2/3) 🙈", "high", "see_no_evil");
+      ntfySend("Gizli Soru", `${currentSecretItem.id}\nSoru: ${currentSecretItem.question}\nHayır dedi (2/3) 🙈`, "high", "see_no_evil");
     } else {
       txt.textContent = "Bak son kez soruyorum.";
       no.style.display = "none";
       yes.style.flex = "1";
-      ntfySend("Gizli Soru", "Hayır yok oldu 😄 (3/3)", "high", "see_no_evil");
+      ntfySend("Gizli Soru", `${currentSecretItem.id}\nSoru: ${currentSecretItem.question}\nHayır yok oldu 😄 (3/3)`, "high", "see_no_evil");
     }
   }
 
@@ -433,23 +469,20 @@
     const yes = document.getElementById("secretYes");
     const no  = document.getElementById("secretNo");
 
-    // sonuç gösterildiyse, evet artık "kapat"
     if (secretState === "result"){
       closeSecret();
       return;
     }
 
-    // ilk defa evet -> sonuç göster
     secretState = "result";
 
-    txt.textContent =
-      "Biliyordum beni kıramayacağını.\nSeni seviyorum ve sabırsızlıkla görüntülü aramanı bekliyorum.";
+    txt.textContent = currentSecretItem.yesReply;
 
     no.style.display = "none";
     yes.textContent = "Tamam";
     yes.style.flex = "1";
 
-    ntfySend("Gizli Soru", "EVET dedi 😄📹", "high", "heart_eyes");
+    ntfySend("Gizli Soru", `${currentSecretItem.id}\nSoru: ${currentSecretItem.question}\nEVET dedi 😄`, "high", "heart_eyes");
   }
 </script>
 </body>
