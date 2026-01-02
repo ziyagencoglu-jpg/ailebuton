@@ -5,28 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dünyalar Güzeli Hüsna'nın Ruh Hali</title>
   <style>
-    body{font-family:system-ui,Arial; margin:0; background:#0f0f10; color:#fff;}
-    .wrap{max-width:620px; margin:0 auto; padding:18px;}
-    h1{font-size:22px; margin:10px 0 16px; letter-spacing:.2px;}
+    :root{
+      --bg1:#0b0b0d;
+      --bg2:#121217;
+      --card:#15151a;
+      --btn:#1f1f26;
+      --stroke:rgba(255,255,255,.10);
+      --soft:rgba(0,0,0,.35);
+    }
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      margin:0;
+      color:#fff;
+      background: radial-gradient(1200px 700px at 20% 0%, #1a1630 0%, transparent 55%),
+                  radial-gradient(1000px 600px at 90% 15%, #10243a 0%, transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+    .wrap{max-width:720px; margin:0 auto; padding:18px;}
+    h1{
+      font-size:32px;
+      margin:12px 0 18px;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
     .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
     button{
-      border:0; border-radius:18px; padding:18px 12px;
-      font-size:16px; font-weight:850; background:#1f1f22; color:#fff;
-      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      padding:20px 14px;
+      font-size:18px;
+      font-weight:900;
+      background: linear-gradient(180deg, #222231, var(--btn));
+      color:#fff;
+      box-shadow: 0 14px 30px var(--soft);
+      transition: transform .06s ease, filter .2s ease;
     }
+    button:hover{filter:brightness(1.05);}
     button:active{transform:scale(0.98);}
     .full{grid-column:1 / -1;}
+
     .card{
-      margin-top:14px; background:#17171a; border:1px solid rgba(255,255,255,.08);
-      border-radius:18px; padding:14px 14px;
-      box-shadow: 0 14px 26px rgba(0,0,0,.28);
+      margin-top:16px;
+      background: linear-gradient(180deg, #191922, var(--card));
+      border:1px solid var(--stroke);
+      border-radius:24px;
+      padding:18px 18px;
+      box-shadow: 0 18px 40px var(--soft);
     }
-    .label{font-size:12px; opacity:.7; margin-bottom:8px;}
+    .label{font-size:14px; opacity:.70; margin-bottom:10px;}
     #status{
-      font-size:18px; line-height:1.35; font-weight:700;
+      font-size:34px;
+      line-height:1.25;
+      font-weight:900;
+      white-space:pre-line;
+      letter-spacing:.1px;
+    }
+    .sub{
+      margin-top:12px;
+      font-size:14px;
+      opacity:.65;
       white-space:pre-line;
     }
-    .sub{margin-top:10px; font-size:12px; opacity:.65;}
+    .miniRow{display:flex; gap:10px; margin-top:12px;}
+    .miniRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
   </style>
 </head>
 <body>
@@ -50,13 +91,18 @@
       <div class="label">Son gönderilen mesaj</div>
       <div id="status">Bir butona bas 👇</div>
       <div id="sub" class="sub"></div>
+
+      <div class="miniRow">
+        <button onclick="testPush()">🧪 Test Bildirimi</button>
+        <button onclick="resetAll()">🔄 Sıfırla</button>
+      </div>
     </div>
   </div>
 
 <script>
-  // ntfy topic
+  // ntfy
   const TOPIC = "ziyahusna657435";
-  const NTFY_BASE = "https://ntfy.sh/" + TOPIC;
+  const NTFY = "https://ntfy.sh/" + TOPIC;
 
   // Tehlikedeyim arama
   const MY_PHONE = "05534205667";
@@ -64,7 +110,7 @@
   // Param bitti sabit mesaj
   const MONEY_TEXT = "Kocambank devrede";
 
-  // Mesaj havuzları
+  // Mesajlar
   const ROTATE = {
     "Üzgünüm": [
       "Hayat üzülmek için fazla kısa gel sevişelim.",
@@ -128,12 +174,18 @@
     ]
   };
 
+  function cleanText(s){
+    return String(s)
+      .replace(/^['"“”‘’]+/g, "")
+      .replace(/['"“”‘’]+$/g, "")
+      .trim();
+  }
+
   function setStatus(bigText, smallText=""){
     document.getElementById("status").textContent = bigText;
     document.getElementById("sub").textContent = smallText;
   }
 
-  // sırayla döndürme (cihazda saklar)
   function nextMessage(key){
     const list = ROTATE[key] || ["(mesaj yok)"];
     const k = "idx_" + key;
@@ -143,29 +195,34 @@
     return msg;
   }
 
-  // ntfy: GET /publish?message=...&priority=...&tags=...&title=...
-  // (tarayıcıda daha stabil) :contentReference[oaicite:2]{index=2}
+  // ntfy publish: GET /publish?... (tarayıcıda en stabil)
   function ntfySend(title, message, priority="high", tags=""){
     const url =
-      `${NTFY_BASE}/publish?` +
+      `${NTFY}/publish?` +
       `title=${encodeURIComponent(title)}` +
       `&message=${encodeURIComponent(message)}` +
       `&priority=${encodeURIComponent(priority)}` +
-      (tags ? `&tags=${encodeURIComponent(tags)}` : "");
+      (tags ? `&tags=${encodeURIComponent(tags)}` : "") +
+      `&t=${Date.now()}`;
 
-    // CORS'a takılmamak için image beacon
+    // 1) fetch no-cors
+    try { fetch(url, { method:"GET", mode:"no-cors", cache:"no-store", keepalive:true }); } catch(e){}
+
+    // 2) image beacon
     const img = new Image();
+    img.referrerPolicy = "no-referrer";
     img.src = url;
   }
 
   function rel(type){
-    const msg = nextMessage(type);
-    setStatus(`“${msg}”`, `${type} gönderildi ✅`);
+    const raw = nextMessage(type);
+    const msg = cleanText(raw);
+    setStatus(msg, `${type} → gönderildi ✅`);
     ntfySend(type, msg, "high", "speech_balloon");
   }
 
   function money(){
-    setStatus(`“${MONEY_TEXT}”`, "Param Bitti gönderildi ✅");
+    setStatus(MONEY_TEXT, "Param Bitti → gönderildi ✅");
     ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
   }
 
@@ -189,12 +246,20 @@
     }catch(e){}
 
     const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
-    setStatus(body, "Tehlikedeyim gönderildi ✅");
-
+    setStatus(body, "Tehlikedeyim → gönderildi ✅");
     ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
 
-    // Arama ekranı
     window.location.href = `tel:${MY_PHONE}`;
+  }
+
+  function testPush(){
+    setStatus("Test bildirimi gönderildi ✅", `Topic: ${TOPIC}`);
+    ntfySend("TEST", "Test bildirimi (site üzerinden) ✅", "high", "test_tube");
+  }
+
+  function resetAll(){
+    ["Üzgünüm","Mutluyum","Yanıyorum","Özledim","Kızgınım"].forEach(k => localStorage.removeItem("idx_" + k));
+    setStatus("Sıfırlandı ✅", "Mesaj sıraları başa alındı");
   }
 </script>
 </body>
