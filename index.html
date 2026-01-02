@@ -1,121 +1,95 @@
-rtant;
 <!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dünyalar Güzeli Hüsna'nın Ruh Hali</title>
   <style>
     :root{
-      --bg1:#0b0b10;
-      --bg2:#151525;
-      --card:#151522;
+      --bg1:#0b0b0d;
+      --bg2:#121217;
+      --card:#15151a;
+      --btn:#1f1f26;
+      --stroke:rgba(255,255,255,.10);
       --soft:rgba(0,0,0,.35);
-      --line:rgba(255,255,255,.12);
-      --text:#f4f4ff;
-      --muted:rgba(255,255,255,.65);
-      --muted2:rgba(255,255,255,.45);
     }
-    *{box-sizing:border-box}
     body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       margin:0;
-      min-height:100vh;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(900px 600px at 15% 10%, #2b1a46 0%, transparent 55%),
-        radial-gradient(900px 600px at 85% 0%, #162a57 0%, transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      padding:18px;
-      display:flex;
-      justify-content:center;
+      color:#fff;
+      background: radial-gradient(1200px 700px at 20% 0%, #1a1630 0%, transparent 55%),
+                  radial-gradient(1000px 600px at 90% 15%, #10243a 0%, transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
     }
-    .wrap{
-      width:min(820px, 100%);
-    }
+    .wrap{max-width:720px; margin:0 auto; padding:18px;}
     h1{
-      margin:6px 0 14px;
-      font-size:28px;
+      font-size:32px;
+      margin:12px 0 18px;
       letter-spacing:.2px;
       line-height:1.15;
-      text-align:center;
-      font-weight:900;
     }
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:12px;
-      margin-top:12px;
-    }
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
     button{
-      appearance:none;
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, #24243a, #171726);
-      color:var(--text);
-      padding:16px 14px;
-      border-radius:20px;
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      padding:20px 14px;
       font-size:18px;
-      font-weight:850;
-      cursor:pointer;
+      font-weight:900;
+      background: linear-gradient(180deg, #222231, var(--btn));
+      color:#fff;
       box-shadow: 0 14px 30px var(--soft);
       transition: transform .06s ease, filter .2s ease;
+      cursor:pointer;
     }
     button:hover{filter:brightness(1.05);}
-    button:active{transform:scale(0.985);}
+    button:active{transform:scale(0.98);}
     .full{grid-column:1 / -1;}
+
     .card{
       margin-top:16px;
       background: linear-gradient(180deg, #191922, var(--card));
-      border:1px solid var(--line);
-      border-radius:26px;
-      padding:16px;
-      box-shadow: 0 18px 70px rgba(0,0,0,.35);
+      border:1px solid var(--stroke);
+      border-radius:24px;
+      padding:18px 18px;
+      box-shadow: 0 18px 40px var(--soft);
     }
-    .label{
-      font-size:14px;
-      color:var(--muted2);
-      letter-spacing:.2px;
-      margin-bottom:8px;
-    }
+    .label{font-size:14px; opacity:.70; margin-bottom:10px;}
     #status{
-      font-size:24px;
-      font-weight:900;
+      font-size:34px;
       line-height:1.25;
+      font-weight:900;
       white-space:pre-line;
+      letter-spacing:.1px;
     }
-    #sub{
-      margin-top:10px;
-      font-size:16px;
-      opacity:.7;
+    .sub{
+      margin-top:12px;
+      font-size:14px;
+      opacity:.65;
       white-space:pre-line;
     }
     .warn{
-      margin-top:14px;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.78);
+      margin-top:10px;
       font-size:14px;
+      opacity:.55;
       line-height:1.35;
     }
 
-    /* Merak butonu: kart içinde, altta, ortalı ve büyük */
-    .curiosityWrap{
+    /* Gizli Soru butonu: tasarımı bozmasın, kartın içinde dursun */
+    .secretWrap{
       margin-top:14px;
       display:flex;
       justify-content:center;
     }
-    .curiosityBtn{
+    .secretBtn{
       width:min(520px, 100%);
-      padding:22px 16px;
-      font-size:20px;
-      border-radius:24px;
-      background: linear-gradient(180deg, #3a214b, #1f1f26);
-      border:1px solid rgba(255,255,255,.16);
+      padding:18px 14px;
+      font-size:18px;
+      border-radius:22px;
+      background: linear-gradient(180deg, #232336, #1f1f26);
+      border:1px solid rgba(255,255,255,.12);
     }
 
-    /* Modal */
+    /* Modal (Gizli Soru) */
     .modal{
       display:none;
       position:fixed;
@@ -135,9 +109,9 @@ rtant;
     }
     .modalCard{
       width:100%;
-      background: linear-gradient(180deg, #1a1a25, #12121a);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:26px;
+      background: linear-gradient(180deg, #191922, #14141b);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
       padding:18px;
       box-shadow: 0 20px 60px rgba(0,0,0,.55);
       position:relative;
@@ -154,50 +128,50 @@ rtant;
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.12);
     }
-    .modalTitle{
-      font-size:24px;
-      font-weight:950;
-      margin:0 0 10px;
-      line-height:1.2;
-      padding-right:54px;
-    }
+    /* Yazı boyutu: ana mesajla aynı */
     .modalText{
-      font-size:18px;
-      opacity:.92;
-      margin:0 0 16px;
-      line-height:1.35;
+      font-size:34px;
+      line-height:1.25;
+      font-weight:900;
       white-space:pre-line;
-    }
-    .modalBtns{
-      display:flex;
-      gap:12px;
-      align-items:stretch;
-    }
-    .modalBtns button{
-      flex:1;
-      border-radius:18px;
-      font-size:18px;
-      padding:16px 14px;
-    }
-    .yesBtn{
-      background: linear-gradient(180deg, #1e6b45, #13422d);
-      border:1px solid rgba(255,255,255,.14);
-    }
-    .noBtn{
-      background: linear-gradient(180deg, #5a1d2b, #2b1118);
-      border:1px solid rgba(255,255,255,.14);
-    }
-    .tinyNote{
-      margin-top:12px;
-      font-size:12px;
-      opacity:.55;
-      text-align:center;
+      letter-spacing:.1px;
+      margin:0;
+      padding-right:56px;
     }
 
-    /* Admin (gizli) */
+    /* Evet/Hayır alanı: ekranın çeyreği kadar hissiyat */
+    .choiceArea{
+      margin-top:16px;
+      height:25vh;               /* tam istediğin gibi */
+      min-height:160px;
+      max-height:240px;
+      display:flex;
+      gap:12px;
+    }
+    .choiceArea button{
+      height:100%;
+      border-radius:22px;
+      font-size:20px;
+      padding:16px 12px;
+    }
+    .yesBtn{
+      background: linear-gradient(180deg, #2b5d3a, #1f1f26);
+      border:1px solid rgba(255,255,255,.18);
+      flex:1;
+      min-width:90px;
+    }
+    .noBtn{
+      background: linear-gradient(180deg, #5d2b2b, #1f1f26);
+      border:1px solid rgba(255,255,255,.18);
+      flex:1;
+      min-width:90px;            /* hayır asla yok olmasın */
+      opacity:1;
+    }
+
+    /* Admin butonları varsayılan gizli */
     .adminRow{display:none; gap:10px; margin-top:12px;}
     .adminRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
-    .adminBadge{display:none; margin-top:10px; font-size:12px; opacity:.55; text-align:center;}
+    .adminBadge{display:none; margin-top:10px; font-size:12px; opacity:.55;}
   </style>
 </head>
 <body>
@@ -205,316 +179,294 @@ rtant;
     <h1>Dünyalar Güzeli Hüsna'nın Ruh Hali</h1>
 
     <div class="grid">
-      <button onclick="rel('Üzgünüm')">Üzgünüm</button>
-      <button onclick="rel('Mutluyum')">Mutluyum</button>
+      <button onclick="rel('Üzgünüm')">😔 Üzgünüm</button>
+      <button onclick="rel('Mutluyum')">😄 Mutluyum</button>
 
-      <button onclick="rel('Yanıyorum')">Yanıyorum</button>
-      <button onclick="rel('Özledim')">Özledim</button>
+      <button onclick="rel('Yanıyorum')">🔥 Yanıyorum</button>
+      <button onclick="rel('Özledim')">🥺 Özledim</button>
 
-      <button onclick="rel('Kızgınım')">Kızgınım</button>
-      <button class="full" onclick="money()">Param Bitti</button>
+      <button class="full" onclick="rel('Kızgınım')">😡 Kızgınım</button>
 
-      <button class="full" onclick="danger()">Tehlikedeyim</button>
+      <button class="full" onclick="money()">💸 Param Bitti</button>
+      <button class="full" onclick="danger()">🚨 Tehlikedeyim</button>
     </div>
 
     <div class="card">
-      <div class="label">Son ekranda görünen mesaj</div>
-      <div id="status">Bir butona bas</div>
-      <div id="sub"></div>
+      <div class="label">Son gönderilen mesaj</div>
+      <div id="status">Bir butona bas 👇</div>
+      <div id="sub" class="sub"></div>
 
       <div class="warn">
-        Lütfen meraktan tüm butonlara basma. Sadece gerçekten ihtiyacın olduğunda kullan; mesajlar sırayla ilerliyor.
+        Lütfen meraktan tüm butonlara basma 🙂 Sadece gerçekten ihtiyacın olduğunda kullan; mesajlar sırayla ilerliyor.
       </div>
 
-      <div class="curiosityWrap">
-        <button class="curiosityBtn" onclick="openCuriosity()">Kendine güveniyorsan bas.</button>
+      <!-- İstediğin yer: Çerçevenin içinde, uyarının altında -->
+      <div class="secretWrap">
+        <button class="secretBtn" onclick="openSecret()">🙈 Gizli Soru</button>
       </div>
 
       <div id="adminBadge" class="adminBadge">Yönetici modu açık ✅</div>
       <div id="adminRow" class="adminRow">
-        <button onclick="testPush()">Test Bildirimi</button>
-        <button onclick="resetAll()">Sıfırla (Bu Telefonda)</button>
+        <button onclick="testPush()">🧪 Test Bildirimi</button>
+        <button onclick="resetAll()">🔄 Sıfırla</button>
       </div>
     </div>
   </div>
 
-  <!-- Merak Modal -->
-  <div id="curiosityModal" class="modal" onclick="modalBgClose(event)">
+  <!-- Gizli Soru Modal -->
+  <div id="secretModal" class="modal" onclick="modalBgClose(event)">
     <div class="modalInner">
       <div class="modalCard" onclick="event.stopPropagation()">
-        <button class="modalClose" onclick="closeCuriosity()">✕</button>
-        <div id="curiosityTitle" class="modalTitle">Bir şey soracağım…</div>
-        <div id="curiosityText" class="modalText">Duşa girip beni görüntülü arayacak mısın?</div>
+        <button class="modalClose" onclick="closeSecret()">✕</button>
 
-        <div class="modalBtns">
-          <button id="yesBtn" class="yesBtn" onclick="curiosityYes()">Evet</button>
-          <button id="noBtn" class="noBtn" onclick="curiosityNo()">Hayır</button>
+        <p id="secretText" class="modalText">Duşa girip beni görüntülü arayacak mısın?</p>
+
+        <div class="choiceArea">
+          <button id="secretYes" class="yesBtn" onclick="secretYes()">Evet</button>
+          <button id="secretNo" class="noBtn" onclick="secretNo()">Hayır</button>
         </div>
-
-        <div id="curiosityNote" class="tinyNote">Not: Bu buton tamamen şaka ve tatlı bir oyun 😄</div>
       </div>
     </div>
   </div>
 
-  <script>
-    // ====== ADMIN (sadece linkle) ======
-    const ADMIN_CODE = "ziya";
-    const qs = new URLSearchParams(location.search);
-    const isAdmin = qs.get("admin") === ADMIN_CODE;
-    if (isAdmin) {
-      document.getElementById("adminRow").style.display = "flex";
-      document.getElementById("adminBadge").style.display = "block";
+<script>
+  // ====== ADMIN (Sadece sen göreceksin) ======
+  const ADMIN_CODE = "ziya";
+  const qs = new URLSearchParams(location.search);
+  const isAdmin = qs.get("admin") === ADMIN_CODE;
+
+  if (isAdmin) {
+    document.getElementById("adminRow").style.display = "flex";
+    document.getElementById("adminBadge").style.display = "block";
+  }
+
+  // ====== NTFY ======
+  const TOPIC = "ziyahusna657435";
+  const NTFY = "https://ntfy.sh/" + TOPIC;
+
+  // Tehlikedeyim arama
+  const MY_PHONE = "05534205667";
+
+  // Param bitti sabit mesaj
+  const MONEY_TEXT = "Kocambank devrede";
+
+  // ====== MESAJLAR ======
+  const ROTATE = {
+    "Üzgünüm": [
+      "Hayat üzülmek için fazla kısa gel sevişelim.",
+      "Kavga etmişiz yine. Tamam biraz öküzlük ettim galiba özür dilerim.",
+      "Unutma kimin haklı olduğu önemli değil. Ne hissettiğimiz önemli.",
+      "Eğer bu üzgünlüğünün sebebi ben değilsem hemen ararmısın yoketmem gereken insanlar var galiba",
+      "Gözyaşı dökerek çirkinleşmeye çalışsanızda bir boka yaramadığını öğrenmek için aynaya bakmaya ne dersiniz prenses?",
+      "Ne çektik biz birbirimizden be fıstığım. Bu botuna bu kadar çok basmak zorunda kalman beni çok yaraladı.",
+      "Kanka diğer butonlarıda mı denesen müptelası oldun bunun, tamam şimdi telefonu masaya bırak güzel bir kahve yap ve pencereyi açıp temiz havayı içine çekerek anama söv iyi gelir",
+      "Benimde çok üzgün olduğumu sakın unutma, üzüldüğüm için seni üzüyor, sonra seni üzdüğüm için bir daha üzülüyorum.",
+      "Üzülmek için fazla güzelsin, bir insan bu kadar parıltılı olup nasıl üzülebilir ki",
+      "Bu üzgünüm butonunun son mesajıydı umarım bunu yanında uyuyor olduğum zamana kadar tüketmemiş olursun karıcım."
+    ],
+    "Mutluyum": [
+      "Mutlu olmak sana çok yakışıyor bal porsuğum yüzün hep gülsün",
+      "Herhalde mutlu olacaksın benim gibi bir kocan var.",
+      "Mutluluğunun kaynağı ben değilsem onu bile kıskanabilirim prenses",
+      "Bu kadar seri bu butonu kullanıyor olman sevindirici, sen mutluysan bende mutluyum fıstığım.",
+      "Bu hayattaki tek gayem seni mutlu etmek, başarılı olduğuma çok sevindim.",
+      "Ne oldu fıstık bu gülücükler ne? Ara bakalım beni bende mutlu olayım.",
+      "Hakettiğin gibi, bunun şans olduğunu asla düşünme bunun için çok çaba sarf ettin",
+      "Bu buton beni mutlu etme butonu aslında. Sen bu butona bastıkça bende dünyanın en mutlu adamı oluyorum.",
+      "Ağzını yerim senin gülüşüne ömrümü veririm, hep mutlu ol aşkım.",
+      "Bu botunun son mesajı umarım çok kısa sürede bitmiştir bitanem. Ben seve seve yenilerini yazarım seni çok seviyorum."
+    ],
+    "Yanıyorum": [
+      "Tabularını yık artık güzelim ben senin kocanım üstündeki tüm kıyafet yüklerinden arınıp beni görüntülü aramaya ne dersin",
+      "Bende feci yükseldim. Butona ne zaman bastığımı nerden biliyorsun diye sorma ben hep yükseğim zaten. www.biletbayisi.com",
+      "Yanımda olsan da vücudunun her cm sini emsem be güzelim. www.biletbayisi.com",
+      "Ufff gelsene ıslanmış bacak aranla çözmemiz gereken şeyler var. www.biletbayisi.com",
+      "Çavuş seni selamlıyor sahip emret 7/24 mesai yapsın yoruldum diyenin canı çıksın. www.biletbayisi.com",
+      "Meme uçlarına benim yerime dokunurmusun. Onları emmeyi çok özledim. www.biletbayisi.com",
+      "Sevişmenin en ateşli anında birden dillerimizin kontrolünü kaybedip ağızlarımızın içinde gezdirmeye başlıyoruz ya heh tam o andayım şuan. www.biletbayisi.com",
+      "Taş gibisin be. Şuanda çıplak ve sıcak vücuduna sarılmak için bir böbreğimi verirdim. www.biletbayisi.com",
+      "Tam şuanda yanında olup boynunu emerken kalçanı sıkıyor olmalıydım amk hayatı. www.biletbayisi.com",
+      "Bu butonun son mesajı, bu kadar hızlı tüketmen umut verici seninle her gece 3 posta seviştiğimiz. Uykusuzluktan günlük işlerimizi aksattığımız evreye geçmeliyiz artık. www.biletbayisi.com"
+    ],
+    "Özledim": [
+      "Çık gel be güzellik, ben gelsem araba kirala falan ohhooo çok masraf :D",
+      "Bende çok özledim. Her gece sana sarılarak uyumak istiyorum artık.",
+      "Oy kıyamam sana az kaldı be güzelim kavuşuyoruz",
+      "Ne çektik be 6 senede. Bizden daha fazla kavuşmayı hakeden çift yoktur dünyada.",
+      "Böyle güzel bir kadının kendisini özlemesinden daha büyük ne başarabilir ki bir erkek bu hayatta?",
+      "Ömrümüz birbirimizi özlemekle geçti. Yaşlandık resmen bal porsuğum",
+      "Seni çoooooooooook seviyorum.",
+      "19 Temmuz sonsuz kavuşma anımız sen hangi tarihtesin. Ne kadar kaldı?",
+      "Özleyenler özediklerine özlediğini söylemeli bence. Arasana fıstığım özlem giderelim.",
+      "Buda özlem butonunun son mesajı umarım kavuşmamıza çok kısa bir zaman kalmıştır. Hayatımın anlamı olan kadın"
+    ],
+    "Kızgınım": [
+      "Biliyorum. Hayat bize çakıl taşlarıyla dolu bir yol çizdi. Ama yolun sonunda yumuşak kumla kaplı bir sahil var.",
+      "Mükemmel ilişki kavgasız olmak değil, kavgalar sonrası kopmayacak olmak.",
+      "Emin ol seni üzmek kırmak yada kızdırmak istemem. Ben çok daha fazlasını yaşıyor ve filtreleyerek daha azını sana yansıtıyorumdur.",
+      "Hem suçlu hem güçlü, bide kızgınmış bak sen şuna ya",
+      "Öfken dinince beni ararmısın. Çözelim şu meseleyi.",
+      "Lütfen kızgınsın diye bu görüşmeme süresini uzatma. Ne kadar uzarsa o kadar kırılırız",
+      "Yine ne bok yedim acaba bu botuna çok fazla basmaya başladın :D",
+      "Haklıda olsam, haksızda olsam sen şuan özür bekliyorsun dimi. Peki tamam özür dilerim hayatım.",
+      "Abartma ya sende bu kadar kızacak ne var. Bayıl birde feriha",
+      "Yine son mesaja geldik kanka. İnşallah yanıyorum ve mutluyumdan çok çok sonra tüketmişsindir bu butonu. He bu arada kızgınken ne kadar tatlı olduğunu söylemişmiydim?"
+    ]
+  };
+
+  function cleanText(s){
+    return String(s)
+      .replace(/^['"“”‘’]+/g, "")
+      .replace(/['"“”‘’]+$/g, "")
+      .trim();
+  }
+
+  function setStatus(bigText, smallText=""){
+    document.getElementById("status").textContent = bigText;
+    document.getElementById("sub").textContent = smallText;
+  }
+
+  function nextMessage(key){
+    const list = ROTATE[key] || ["(mesaj yok)"];
+    const k = "idx_" + key;
+    const idx = parseInt(localStorage.getItem(k) || "0", 10);
+    const msg = list[idx % list.length];
+    localStorage.setItem(k, String((idx + 1) % list.length));
+    return msg;
+  }
+
+  function ntfySend(title, message, priority="high", tags=""){
+    const url =
+      `${NTFY}/publish?` +
+      `title=${encodeURIComponent(title)}` +
+      `&message=${encodeURIComponent(message)}` +
+      `&priority=${encodeURIComponent(priority)}` +
+      (tags ? `&tags=${encodeURIComponent(tags)}` : "") +
+      `&t=${Date.now()}`;
+
+    try { fetch(url, { method:"GET", mode:"no-cors", cache:"no-store", keepalive:true }); } catch(e){}
+    const img = new Image();
+    img.referrerPolicy = "no-referrer";
+    img.src = url;
+  }
+
+  function rel(type){
+    const raw = nextMessage(type);
+    const msg = cleanText(raw);
+    setStatus(msg, `${type} → gönderildi ✅`);
+    ntfySend(type, msg, "high", "speech_balloon");
+  }
+
+  function money(){
+    setStatus(MONEY_TEXT, "Param Bitti → gönderildi ✅");
+    ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
+  }
+
+  function getLocation(){
+    return new Promise((resolve, reject) => {
+      if(!navigator.geolocation) return reject("Konum desteklenmiyor");
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>resolve(pos.coords),
+        (err)=>reject(err.message),
+        { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
+      );
+    });
+  }
+
+  async function danger(){
+    setStatus("Konum alınıyor…", "İzin verirsen konum gönderilecek");
+    let maps = "Konum alınamadı (izin verilmedi olabilir)";
+    try{
+      const c = await getLocation();
+      maps = `https://maps.google.com/?q=${c.latitude},${c.longitude}`;
+    }catch(e){}
+
+    const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
+    setStatus(body, "Tehlikedeyim → gönderildi ✅");
+    ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
+    window.location.href = `tel:${MY_PHONE}`;
+  }
+
+  function testPush(){
+    setStatus("Test bildirimi gönderildi ✅", `Topic: ${TOPIC}`);
+    ntfySend("TEST", "Test bildirimi (site üzerinden) ✅", "high", "test_tube");
+  }
+
+  function resetAll(){
+    ["Üzgünüm","Mutluyum","Yanıyorum","Özledim","Kızgınım"].forEach(k => localStorage.removeItem("idx_" + k));
+    setStatus("Sıfırlandı ✅", "Mesaj sıraları başa alındı");
+  }
+
+  // ====== GİZLİ SORU MEKANİĞİ ======
+  let noCount = 0;
+
+  function openSecret(){
+    noCount = 0;
+    document.getElementById("secretText").textContent = "Duşa girip beni görüntülü arayacak mısın?";
+
+    const yes = document.getElementById("secretYes");
+    const no  = document.getElementById("secretNo");
+
+    yes.textContent = "Evet";
+    no.textContent  = "Hayır";
+
+    // başlangıç: 50/50
+    yes.style.flex = "1";
+    no.style.flex  = "1";
+    no.disabled = false;
+    no.style.opacity = "1";
+
+    document.getElementById("secretModal").style.display = "block";
+  }
+
+  function closeSecret(){
+    document.getElementById("secretModal").style.display = "none";
+  }
+
+  function modalBgClose(e){
+    if (e.target && e.target.id === "secretModal") closeSecret();
+  }
+
+  function secretNo(){
+    noCount++;
+
+    const txt = document.getElementById("secretText");
+    const yes = document.getElementById("secretYes");
+    const no  = document.getElementById("secretNo");
+
+    if (noCount === 1){
+      txt.textContent = "Hadi ama bir daha düşün.";
+      // Evet büyür, Hayır küçülür (alan kaydırma)
+      yes.style.flex = "2";
+      no.style.flex  = "1";
+    } else if (noCount === 2){
+      txt.textContent = "Olmaz bu cevabı kabul etmiyorum.";
+      // yine eşit miktarda değişsin
+      yes.style.flex = "3";
+      no.style.flex  = "1";
+    } else {
+      txt.textContent = "Bak son kez soruyorum.";
+      // tüm alan fiilen evetin olsun; hayır KAYBOLMASIN (minik kalsın ve kilitlensin)
+      yes.style.flex = "100";
+      no.style.flex  = "0.01";
+      no.disabled = true;
+      no.style.opacity = "0.35";
     }
+  }
 
-    // ====== NTFY ======
-    const TOPIC = "ziyahusna657435";
-    const NTFY = "https://ntfy.sh/" + TOPIC;
+  function secretYes(){
+    const txt = document.getElementById("secretText");
+    const yes = document.getElementById("secretYes");
+    const no  = document.getElementById("secretNo");
 
-    // Tehlikedeyim arama
-    const MY_PHONE = "05534205667";
+    txt.textContent = "Biliyordum beni kıramayacağını.\nSeni seviyorum ve sabırsızlıkla görüntülü aramanı bekliyorum.";
+    // Yazı boyutu zaten aynı (modalText)
+    yes.textContent = "Tamam";
+    no.style.opacity = "0.35";
+    no.disabled = true;
 
-    // Param bitti sabit mesaj
-    const MONEY_TEXT = "Kocambank devrede";
-
-    // ====== MESAJLAR ======
-    const ROTATE = {
-      "Üzgünüm": [
-        "Hayat üzülmek için fazla kısa gel sevişelim.",
-        "Kavga etmişiz yine. Tamam biraz öküzlük ettim galiba özür dilerim.",
-        "Unutma kimin haklı olduğu önemli değil. Ne hissettiğimiz önemli.",
-        "Eğer bu üzgünlüğünün sebebi ben değilsem hemen arar mısın yok etmem gereken insanlar var galiba",
-        "Gözyaşı dökerek çirkinleşmeye çalışsanız da bir boka yaramadığını öğrenmek için aynaya bakmaya ne dersiniz prenses?",
-        "Ne çektik biz birbirimizden be fıstığım. Bu butona bu kadar çok basmak zorunda kalman beni çok yaraladı.",
-        "Kanka diğer butonları da mı denesen müptelası oldun bunun, tamam şimdi telefonu masaya bırak güzel bir kahve yap ve pencereyi açıp temiz havayı içine çekerek anama söv iyi gelir",
-        "Benim de çok üzgün olduğumu sakın unutma, üzüldüğüm için seni üzüyor, sonra seni üzdüğüm için bir daha üzülüyorum.",
-        "Üzülmek için fazla güzelsin, bir insan bu kadar parıltılı olup nasıl üzülebilir ki",
-        "Bu üzgünüm butonunun son mesajıydı umarım bunu yanında uyuyor olduğum zamana kadar tüketmemiş olursun karıcım."
-      ],
-      "Mutluyum": [
-        "Mutlu olmak sana çok yakışıyor bal porsuğum yüzün hep gülsün",
-        "Herhalde mutlu olacaksın benim gibi bir kocan var.",
-        "Mutluluğunun kaynağı ben değilsem onu bile kıskanabilirim prenses",
-        "Bu kadar seri bu butonu kullanıyor olman sevindirici, sen mutluysan ben de mutluyum fıstığım.",
-        "Bu hayattaki tek gayem seni mutlu etmek, başarılı olduğuma çok sevindim.",
-        "Ne oldu fıstık bu gülücükler ne? Ara bakalım beni ben de mutlu olayım.",
-        "Hak ettiğin gibi, bunun şans olduğunu asla düşünme bunun için çok çaba sarf ettin",
-        "Bu buton beni mutlu etme butonu aslında. Sen bu butona bastıkça ben de dünyanın en mutlu adamı oluyorum.",
-        "Ağzını yerim senin gülüşüne ömrümü veririm, hep mutlu ol aşkım.",
-        "Bu butonun son mesajı umarım çok kısa sürede bitmiştir bitanem. Ben seve seve yenilerini yazarım seni çok seviyorum."
-      ],
-      "Yanıyorum": [
-        "Tabularını yık artık güzelim ben senin kocanım üstündeki tüm kıyafet yüklerinden arınıp beni görüntülü aramaya ne dersin",
-        "Ben de feci yanıyorum. Butona ne zaman bastığımı nereden biliyorsun diye sorma ben hep yanıyorum zaten. www.biletbayisi.com",
-        "Yanımda olsan da vücudunun her cm’sini emsem be güzelim. www.biletbayisi.com",
-        "Ufff gelsene ıslanmış bacak aranda çözmemiz gereken şeyler var. www.biletbayisi.com",
-        "Çavuş seni selamlıyor sahip emret 7/24 mesai yapsın yoruldum diyenin canı çıksın. www.biletbayisi.com",
-        "Meme uçlarına benim yerime dokunur musun. Onları emmeyi çok özledim. www.biletbayisi.com",
-        "Sevişmenin en ateşli anında birden dillerimizin kontrolünü kaybedip ağızlarımızın içinde gezdirmeye başlıyoruz ya heh tam o andayım şu an. www.biletbayisi.com",
-        "Taş gibisin be. Şu anda çıplak ve sıcak vücuduna sarılmak için bir böbreğimi verirdim. www.biletbayisi.com",
-        "Tam şu anda yanında olup boynunu emerken kalçanı sıkıyor olmalıydım amk hayatı. www.biletbayisi.com",
-        "Bu butonun son mesajı; bu kadar hızlı tüketmen umut verici. Seninle her gece 3 posta seviştiğimiz, uykusuzluktan günlük işlerimizi aksattığımız evreye geçmeliyiz artık. www.biletbayisi.com"
-      ],
-      "Özledim": [
-        "Çık gel be güzellik, ben gelsem araba kirala falan ohhooo çok masraf :D",
-        "Ben de çok özledim. Her gece sana sarılarak uyumak istiyorum artık.",
-        "Oy kıyamam sana az kaldı be güzelim kavuşuyoruz",
-        "Ne çektik be 6 senede. Bizden daha fazla kavuşmayı hak eden çift yoktur dünyada.",
-        "Böyle güzel bir kadının kendisini özlemesinden daha büyük ne başarabilir ki bir erkek bu hayatta?",
-        "Ömrümüz birbirimizi özlemekle geçti. Yaşlandık resmen bal porsuğum",
-        "Seni çoooooooooook seviyorum.",
-        "19 Temmuz sonsuz kavuşma anımız sen hangi tarihtesin. Ne kadar kaldı?",
-        "Özleyenler özlediklerine özlediğini söylemeli bence. Arasana fıstığım özlem giderelim.",
-        "Bu da özlem butonunun son mesajı umarım kavuşmamıza çok kısa bir zaman kalmıştır. Hayatımın anlamı olan kadın"
-      ],
-      "Kızgınım": [
-        "Biliyorum. Hayat bize çakıl taşlarıyla dolu bir yol çizdi. Ama yolun sonunda yumuşak kumla kaplı bir sahil var.",
-        "Mükemmel ilişki kavgasız olmak değil, kavgalar sonrası kopmayacak olmak.",
-        "Emin ol seni üzmek kırmak ya da kızdırmak istemem. Ben çok daha fazlasını yaşıyor ve filtreleyerek daha azını sana yansıtıyorumdur.",
-        "Hem suçlu hem güçlü, bir de kızgınmış bak sen şuna ya",
-        "Öfken dinince beni arar mısın. Çözelim şu meseleyi.",
-        "Lütfen kızgınsın diye bu görüşmeme süresini uzatma. Ne kadar uzarsa o kadar kırılırız",
-        "Yine ne bok yedim acaba bu butona çok fazla basmaya başladın :D",
-        "Haklı da olsam, haksız da olsam sen şu an özür bekliyorsun dimi. Peki tamam özür dilerim hayatım.",
-        "Abartma ya sen de bu kadar kızacak ne var. Bayıl bir de feriha",
-        "Yine son mesaja geldik kanka. İnşallah yanıyorum ve mutluyumdan çok çok sonra tüketmişsindir bu butonu. He bu arada kızgınken ne kadar tatlı olduğunu söylemiş miydim?"
-      ]
-    };
-
-    // ====== yardımcılar ======
-    function cleanText(s){
-      // baş/son tırnakları temiz tutalım diye (gerekirse)
-      return String(s || "")
-        .replace(/^['"“”‘’]+/g, "")
-        .replace(/['"“”‘’]+$/g, "")
-        .trim();
-    }
-
-    function setStatus(bigText, smallText=""){
-      document.getElementById("status").textContent = bigText;
-      document.getElementById("sub").textContent = smallText;
-    }
-
-    // Her telefonda ayrı sıra: localStorage cihaz bazlıdır → senin denemelerin eşinin sırasını etkilemez.
-    function nextMessage(key){
-      const list = ROTATE[key] || ["(mesaj yok)"];
-      const k = "idx_" + key;
-      const idx = parseInt(localStorage.getItem(k) || "0", 10);
-      const msg = list[idx % list.length];
-      localStorage.setItem(k, String((idx + 1) % list.length));
-      return msg;
-    }
-
-    async function ntfySend(title, message, priority="high", tags=""){
-      try{
-        const res = await fetch(NTFY, {
-          method:"POST",
-          headers:{
-            "Title": title,
-            "Priority": priority,
-            "Tags": tags
-          },
-          body: message
-        });
-        return res.ok;
-      }catch(e){
-        return false;
-      }
-    }
-
-    // ====== Buton aksiyonları ======
-    async function rel(type){
-      const raw = nextMessage(type);
-      const msg = cleanText(raw);
-
-      setStatus(msg, `${type} → gönderildi ✅`);
-
-      const ok = await ntfySend(type, msg, "high", "speech_balloon");
-      if(!ok){
-        // ntfy yoksa ekranda en azından söyle
-        setStatus(msg, `${type} → gönderildi ama bildirim gidemedİ (Topic doğru mu? İnternet var mı?)`);
-      }
-    }
-
-    async function money(){
-      setStatus(MONEY_TEXT, "Param Bitti → gönderildi ✅");
-      const ok = await ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
-      if(!ok){
-        setStatus(MONEY_TEXT, "Bildirim gidemedİ (Topic doğru mu? İnternet var mı?)");
-      }
-    }
-
-    function getLocation(){
-      return new Promise((resolve, reject) => {
-        if(!navigator.geolocation) return reject("Konum desteklenmiyor");
-        navigator.geolocation.getCurrentPosition(
-          (pos)=>resolve(pos.coords),
-          (err)=>reject(err.message),
-          { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
-        );
-      });
-    }
-
-    async function danger(){
-      setStatus("Konum alınıyor…", "İzin verirsen konum gönderilecek");
-
-      let maps = "Konum alınamadı (izin verilmedi olabilir)";
-      try{
-        const c = await getLocation();
-        maps = `https://maps.google.com/?q=${c.latitude},${c.longitude}`;
-      }catch(e){}
-
-      const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
-      setStatus(body, "Tehlikedeyim → gönderildi ✅");
-
-      const ok = await ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
-      if(!ok){
-        setStatus(body, "Bildirim gidemedİ (Topic doğru mu? İnternet var mı?)");
-      }
-
-      // Arama ekranı
-      window.location.href = `tel:${MY_PHONE}`;
-    }
-
-    // ====== Admin (isteğe bağlı) ======
-    async function testPush(){
-      setStatus("Test bildirimi gönderildi ✅", `Topic: ${TOPIC}`);
-      await ntfySend("TEST", "Test bildirimi (site üzerinden) ✅", "high", "test_tube");
-    }
-    function resetAll(){
-      Object.keys(ROTATE).forEach(k => localStorage.removeItem("idx_"+k));
-      setStatus("Bu telefondaki mesaj sıraları sıfırlandı ✅", "Eşinin telefonunu etkilemez.");
-    }
-
-    // ====== Merak oyunu ======
-    let noCount = 0;
-
-    function openCuriosity(){
-      noCount = 0;
-      document.getElementById("curiosityTitle").textContent = "Bir şey soracağım…";
-      document.getElementById("curiosityText").textContent = "Duşa girip beni görüntülü arayacak mısın?";
-      document.getElementById("curiosityNote").textContent = "Not: Bu buton tamamen şaka ve tatlı bir oyun 😄";
-
-      const yes = document.getElementById("yesBtn");
-      const no = document.getElementById("noBtn");
-      yes.style.flex = "1";
-      no.style.flex = "1";
-      no.style.transform = "scale(1)";
-      no.style.opacity = "1";
-      no.disabled = false;
-
-      document.getElementById("curiosityModal").style.display = "block";
-    }
-
-    function closeCuriosity(){
-      document.getElementById("curiosityModal").style.display = "none";
-    }
-
-    function modalBgClose(e){
-      // modal arkaplanına basınca kapansın
-      closeCuriosity();
-    }
-
-    function curiosityNo(){
-      noCount++;
-      const txt = document.getElementById("curiosityText");
-      const no = document.getElementById("noBtn");
-      const yes = document.getElementById("yesBtn");
-
-      if(noCount === 1){
-        txt.textContent = "Hadi amaa… bir daha düşün 😌";
-      }else if(noCount === 2){
-        txt.textContent = "Bir daha düşün istersen 😏";
-      }else if(noCount === 3){
-        txt.textContent = "Bu cevabı kabul etmiyorum 😄";
-      }else{
-        // hayır iyice küçülsün ve sonunda fiilen basılamaz hale gelsin
-        const scale = Math.max(0.18, 1 - (noCount * 0.22));
-        no.style.transform = `scale(${scale})`;
-        no.style.opacity = String(Math.max(0.15, scale));
-
-        if(noCount >= 5){
-          txt.textContent = "Tamam… artık sadece doğru cevap kaldı 😎";
-          no.disabled = true;
-          no.style.opacity = "0.15";
-          no.style.transform = "scale(0.18)";
-          yes.style.flex = "9";
-        }
-      }
-    }
-
-    function curiosityYes(){
-      document.getElementById("curiosityTitle").textContent = "Biliyordum 😌";
-      document.getElementById("curiosityText").textContent =
-        "Beni kıramayacağını biliyordum.\nSeni seviyorum ve sabırsızlıkla görüntülü aramanı bekliyorum ❤️";
-      document.getElementById("curiosityNote").textContent = "";
-
-      const no = document.getElementById("noBtn");
-      const yes = document.getElementById("yesBtn");
-      no.style.display = "none";
-      yes.style.flex = "1";
-      yes.textContent = "Tamam 😄";
-      yes.onclick = closeCuriosity;
-    }
-  </script>
+    yes.onclick = () => closeSecret();
+  }
+</script>
 </body>
 </html>
