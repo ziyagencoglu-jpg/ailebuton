@@ -72,8 +72,11 @@
       opacity:.55;
       line-height:1.35;
     }
-    .miniRow{display:flex; gap:10px; margin-top:12px;}
-    .miniRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
+
+    /* Admin butonları varsayılan gizli */
+    .adminRow{display:none; gap:10px; margin-top:12px;}
+    .adminRow button{flex:1; padding:14px 12px; font-size:14px; border-radius:18px;}
+    .adminBadge{display:none; margin-top:10px; font-size:12px; opacity:.55;}
   </style>
 </head>
 <body>
@@ -102,7 +105,9 @@
         Lütfen meraktan tüm butonlara basma 🙂 Sadece gerçekten ihtiyacın olduğunda kullan; mesajlar sırayla ilerliyor.
       </div>
 
-      <div class="miniRow">
+      <div id="adminBadge" class="adminBadge">Yönetici modu açık ✅</div>
+
+      <div id="adminRow" class="adminRow">
         <button onclick="testPush()">🧪 Test Bildirimi</button>
         <button onclick="resetAll()">🔄 Sıfırla</button>
       </div>
@@ -110,12 +115,28 @@
   </div>
 
 <script>
+  // ====== ADMIN (Sadece sen göreceksin) ======
+  // Sen admin için linke şunu ekle: ?admin=ziya
+  const ADMIN_CODE = "ziya";
+  const qs = new URLSearchParams(location.search);
+  const isAdmin = qs.get("admin") === ADMIN_CODE;
+
+  if (isAdmin) {
+    document.getElementById("adminRow").style.display = "flex";
+    document.getElementById("adminBadge").style.display = "block";
+  }
+
+  // ====== NTFY ======
   const TOPIC = "ziyahusna657435";
   const NTFY = "https://ntfy.sh/" + TOPIC;
 
+  // Tehlikedeyim arama
   const MY_PHONE = "05534205667";
+
+  // Param bitti sabit mesaj
   const MONEY_TEXT = "Kocambank devrede";
 
+  // ====== MESAJLAR ======
   const ROTATE = {
     "Üzgünüm": [
       "Hayat üzülmek için fazla kısa gel sevişelim.",
@@ -169,3 +190,99 @@
       "Biliyorum. Hayat bize çakıl taşlarıyla dolu bir yol çizdi. Ama yolun sonunda yumuşak kumla kaplı bir sahil var.",
       "Mükemmel ilişki kavgasız olmak değil, kavgalar sonrası kopmayacak olmak.",
       "Emin ol seni üzmek kırmak yada kızdırmak istemem. Ben çok daha fazlasını yaşıyor ve filtreleyerek daha azını sana yansıtıyorumdur.",
+      "Hem suçlu hem güçlü, bide kızgınmış bak sen şuna ya",
+      "Öfken dinince beni ararmısın. Çözelim şu meseleyi.",
+      "Lütfen kızgınsın diye bu görüşmeme süresini uzatma. Ne kadar uzarsa o kadar kırılırız",
+      "Yine ne bok yedim acaba bu botuna çok fazla basmaya başladın :D",
+      "Haklıda olsam, haksızda olsam sen şuan özür bekliyorsun dimi. Peki tamam özür dilerim hayatım.",
+      "Abartma ya sende bu kadar kızacak ne var. Bayıl birde feriha",
+      "Yine son mesaja geldik kanka. İnşallah yükseldim ve mutluyumdan çok çok sonra tüketmişsindir bu butonu. He bu arada kızgınken ne kadar tatlı olduğunu söylemişmiydim?"
+    ]
+  };
+
+  function cleanText(s){
+    return String(s)
+      .replace(/^['"“”‘’]+/g, "")
+      .replace(/['"“”‘’]+$/g, "")
+      .trim();
+  }
+
+  function setStatus(bigText, smallText=""){
+    document.getElementById("status").textContent = bigText;
+    document.getElementById("sub").textContent = smallText;
+  }
+
+  function nextMessage(key){
+    const list = ROTATE[key] || ["(mesaj yok)"];
+    const k = "idx_" + key;
+    const idx = parseInt(localStorage.getItem(k) || "0", 10);
+    const msg = list[idx % list.length];
+    localStorage.setItem(k, String((idx + 1) % list.length));
+    return msg;
+  }
+
+  function ntfySend(title, message, priority="high", tags=""){
+    const url =
+      `${NTFY}/publish?` +
+      `title=${encodeURIComponent(title)}` +
+      `&message=${encodeURIComponent(message)}` +
+      `&priority=${encodeURIComponent(priority)}` +
+      (tags ? `&tags=${encodeURIComponent(tags)}` : "") +
+      `&t=${Date.now()}`;
+
+    try { fetch(url, { method:"GET", mode:"no-cors", cache:"no-store", keepalive:true }); } catch(e){}
+    const img = new Image();
+    img.referrerPolicy = "no-referrer";
+    img.src = url;
+  }
+
+  function rel(type){
+    const raw = nextMessage(type);
+    const msg = cleanText(raw);
+    setStatus(msg, `${type} → gönderildi ✅`);
+    ntfySend(type, msg, "high", "speech_balloon");
+  }
+
+  function money(){
+    setStatus(MONEY_TEXT, "Param Bitti → gönderildi ✅");
+    ntfySend("Param Bitti", MONEY_TEXT, "high", "moneybag");
+  }
+
+  function getLocation(){
+    return new Promise((resolve, reject) => {
+      if(!navigator.geolocation) return reject("Konum desteklenmiyor");
+      navigator.geolocation.getCurrentPosition(
+        (pos)=>resolve(pos.coords),
+        (err)=>reject(err.message),
+        { enableHighAccuracy:true, timeout:10000, maximumAge:0 }
+      );
+    });
+  }
+
+  async function danger(){
+    setStatus("Konum alınıyor…", "İzin verirsen konum gönderilecek");
+    let maps = "Konum alınamadı (izin verilmedi olabilir)";
+    try{
+      const c = await getLocation();
+      maps = `https://maps.google.com/?q=${c.latitude},${c.longitude}`;
+    }catch(e){}
+
+    const body = `Tehlikedeyim butonuna basıldı!\nKonum: ${maps}`;
+    setStatus(body, "Tehlikedeyim → gönderildi ✅");
+    ntfySend("Tehlikedeyim", body, "urgent", "rotating_light,warning");
+    window.location.href = `tel:${MY_PHONE}`;
+  }
+
+  // Admin fonksiyonları (sadece admin linkiyle görünür)
+  function testPush(){
+    setStatus("Test bildirimi gönderildi ✅", `Topic: ${TOPIC}`);
+    ntfySend("TEST", "Test bildirimi (site üzerinden) ✅", "high", "test_tube");
+  }
+
+  function resetAll(){
+    ["Üzgünüm","Mutluyum","Yanıyorum","Özledim","Kızgınım"].forEach(k => localStorage.removeItem("idx_" + k));
+    setStatus("Sıfırlandı ✅", "Mesaj sıraları başa alındı");
+  }
+</script>
+</body>
+</html>
